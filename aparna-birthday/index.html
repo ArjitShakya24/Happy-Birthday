@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy 20th Birthday, Aparna 🌻</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Caveat:wght@500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --petal:#F6B80F;      /* sunflower petal */
+  --petal-soft:#FFE48A;
+  --sun:#FFF3BF;        /* pale sunlight */
+  --seed:#3A2210;       /* seed-head brown */
+  --seed-2:#5A3718;
+  --leaf:#4D6A22;       /* stem green */
+  --leaf-soft:#A9BF6A;
+  --blush:#E4572E;      /* accent for hearts */
+  --ink:#2B1A0C;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --script:'Caveat','Segoe Script',cursive;
+  --sans:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--sun);overflow:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+
+/* ---------- layout shell ---------- */
+#app{position:fixed;inset:0;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  background:
+    radial-gradient(1200px 600px at 85% -10%,rgba(246,184,15,.35),transparent 60%),
+    radial-gradient(900px 500px at -10% 110%,rgba(169,191,106,.35),transparent 60%),
+    var(--sun)}
+.floaters{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.floaters svg{position:absolute;opacity:.16;animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+header.bar{position:relative;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(58,34,16,.15);min-height:54px}
+header.bar .now{flex:1;min-width:0;font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--seed);color:var(--petal-soft);font-weight:700;font-size:.85rem}
+.chip.ghost{background:transparent;color:var(--seed);border:1.5px solid var(--seed)}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+
+main{position:relative;z-index:2;flex:1;overflow-y:auto;overflow-x:hidden}
+.chapter{display:none;min-height:100%;padding:28px 20px 40px;max-width:760px;margin:0 auto;flex-direction:column;align-items:center;text-align:center}
+.chapter.active{display:flex;animation:enter .6s ease both}
+@keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h1,h2{font-family:var(--serif);font-weight:600;line-height:1.1;letter-spacing:-.01em}
+h2{font-size:clamp(1.9rem,6vw,2.8rem);margin:6px 0 18px}
+.hint{font-size:.9rem;opacity:.75;margin-top:10px}
+.script{font-family:var(--script);font-size:1.5rem;color:var(--leaf)}
+
+footer.nav{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid rgba(58,34,16,.15);gap:10px}
+footer.nav .label{font-family:var(--serif);font-size:1rem;text-align:center;flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:14px;background:var(--seed);color:var(--petal-soft);font-weight:800;box-shadow:0 5px 0 var(--petal);transition:transform .15s,box-shadow .15s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--petal)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.gold{background:var(--petal);color:var(--seed);box-shadow:0 5px 0 var(--seed)}
+
+/* ---------- lock + loader (full-screen overlays) ---------- */
+.overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--seed);
+  background-image:radial-gradient(circle at 20% 20%,rgba(246,184,15,.18),transparent 45%),radial-gradient(circle at 80% 80%,rgba(77,106,34,.35),transparent 50%)}
+.overlay.hide{display:none}
+.lock-card{position:relative;width:min(420px,100%);background:var(--sun);border-radius:28px 28px 28px 6px;padding:54px 28px 28px;text-align:center;box-shadow:0 22px 60px rgba(0,0,0,.45)}
+.lock-card .badge{position:absolute;top:-38px;left:50%;translate:-50% 0;width:76px;height:76px;border-radius:50%;background:var(--seed);display:grid;place-items:center;border:5px solid var(--petal)}
+.lock-card h1{font-size:2.6rem;margin:4px 0 8px}
+.lock-card p{font-size:.95rem;opacity:.8}
+.lock-card label{display:block;text-align:left;font-weight:800;font-size:.85rem;margin:20px 0 6px}
+.lock-card input{width:100%;padding:14px;border-radius:12px;border:2px solid var(--seed);background:#fff;font:700 1.2rem var(--sans);letter-spacing:.25em;text-align:center}
+.lock-card .err{min-height:1.3em;color:var(--blush);font-weight:700;font-size:.85rem;margin-top:8px}
+.lock-card .btn{width:100%;margin-top:10px}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.loader h2{color:var(--petal-soft);margin-top:20px}
+.loader p{color:var(--petal-soft);opacity:.8}
+.loader .bar-wrap{width:min(280px,70vw);height:6px;background:rgba(255,228,138,.25);border-radius:6px;margin:22px auto 0;overflow:hidden}
+.loader .bar-fill{height:100%;width:0;background:var(--petal);animation:load 2.4s ease forwards}
+@keyframes load{to{width:100%}}
+.loader .spin-flower{animation:spin 6s linear infinite}
+
+/* ---------- welcome ---------- */
+.title-big{font-size:clamp(2.6rem,11vw,5rem);font-weight:800;line-height:.95}
+.title-big em{font-style:italic;font-weight:600;color:var(--leaf)}
+.nametag{display:inline-block;margin:18px 0 12px;padding:10px 26px;background:var(--seed);color:var(--petal);font-family:var(--serif);font-size:1.8rem;letter-spacing:.12em;transform:rotate(-2deg);box-shadow:6px 6px 0 var(--petal)}
+.polaroid{margin-top:22px;width:min(260px,70%);background:#fff;padding:12px 12px 40px;box-shadow:0 14px 30px rgba(58,34,16,.25);transform:rotate(3deg);position:relative}
+.polaroid .tape{position:absolute;top:-12px;left:50%;translate:-50% 0;width:90px;height:26px;background:rgba(246,184,15,.7);rotate:-4deg}
+.polaroid .pic{aspect-ratio:1;background:linear-gradient(160deg,var(--petal-soft),var(--petal));display:grid;place-items:center}
+.polaroid .cap{position:absolute;bottom:8px;left:0;right:0;font-family:var(--script);font-size:1.4rem;color:var(--seed)}
+.datebadge{display:inline-block;border:2px solid var(--seed);padding:4px 12px;font-weight:800;font-size:.8rem;letter-spacing:.1em}
+
+/* ---------- envelope + letter ---------- */
+.envelope{position:relative;width:min(340px,86vw);height:220px;margin-top:40px;cursor:pointer}
+.env-back,.env-front{position:absolute;inset:0;border-radius:6px}
+.env-back{background:#D9A21B}
+.env-flap{position:absolute;left:0;right:0;top:0;height:110px;background:#F0BC35;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s ease;z-index:4}
+.env-front{background:#E8AE22;clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);z-index:3}
+.envelope.open .env-flap{transform:rotateX(180deg);z-index:1}
+.envelope .tap{position:absolute;left:50%;bottom:26px;translate:-50% 0;z-index:5;background:var(--seed);color:var(--petal-soft);padding:9px 18px;border-radius:999px;font-weight:800;font-size:.8rem}
+.envelope.open .tap{display:none}
+.bee{position:absolute;top:-44px;left:50%;translate:-50% 0;z-index:6;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{translate:-50% -8px}}
+.letter{width:100%;max-width:560px;text-align:left;background:#FFFDF2;border:1.5px dashed var(--petal);border-radius:10px;padding:24px 22px;box-shadow:8px 8px 0 var(--petal-soft);font-family:var(--serif);font-size:1.05rem;line-height:1.7}
+.letter p{margin-bottom:.9em}
+.letter .to{font-size:1.4rem;font-weight:600;color:var(--leaf)}
+.letter .sign{font-family:var(--script);font-size:1.9rem;color:var(--seed);margin-top:6px}
+.letter p.rev{opacity:0;transform:translateY(8px);animation:enter .7s ease forwards}
+
+/* ---------- scratch ---------- */
+.coupon-wrap{position:relative;width:min(420px,92vw);height:210px;border-radius:14px;overflow:hidden;box-shadow:0 12px 26px rgba(58,34,16,.25);background:#fff;margin-top:8px}
+.coupon{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:repeating-linear-gradient(135deg,var(--sun) 0 14px,#FFE9A0 14px 28px);border:3px dashed var(--seed);border-radius:14px}
+.coupon .k{font-weight:800;font-size:.8rem;letter-spacing:.15em;color:var(--leaf)}
+.coupon .big{font-family:var(--serif);font-weight:800;font-size:2.1rem;color:var(--seed)}
+.coupon .sm{font-size:.85rem;opacity:.8}
+#scratch{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+
+/* ---------- love meter ---------- */
+.jar{width:130px;height:190px;border:4px solid var(--seed);border-radius:65px 65px 16px 16px;position:relative;overflow:hidden;background:#fff;margin:6px auto}
+.jar .fill{position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(var(--petal),#E59A00);transition:height 3.2s cubic-bezier(.3,.8,.3,1)}
+.jar .fill::before{content:"";position:absolute;left:-10%;right:-10%;top:-10px;height:20px;border-radius:50%;background:var(--petal-soft);opacity:.8}
+.jar .ico{position:absolute;inset:0;display:grid;place-items:center}
+.pct{font-family:var(--serif);font-size:2.6rem;font-weight:800;margin:14px 0 4px}
+.panel{width:min(440px,100%);background:rgba(255,253,242,.9);border-radius:20px;padding:22px 18px;box-shadow:0 10px 0 var(--petal-soft),0 18px 30px rgba(58,34,16,.15)}
+
+/* ---------- ATM ---------- */
+.atm-stage{position:relative;width:min(560px,100%);border-radius:18px;padding:22px 14px 22px;background:linear-gradient(160deg,#2c3a1a,#16200c);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.atm{position:relative;margin:0 auto;width:min(380px,100%);background:#4a4f45;border-radius:14px 14px 6px 6px;padding:10px 12px 14px;border:2px solid #2d3029}
+.atm .sign{background:var(--petal);color:var(--seed);font-weight:800;letter-spacing:.35em;font-size:.8rem;padding:6px;margin:-10px -12px 10px;border-radius:12px 12px 0 0}
+.atm-top{display:flex;gap:8px;align-items:stretch}
+.sides{display:flex;flex-direction:column;justify-content:space-around;gap:8px}
+.sides i{display:block;width:16px;height:22px;background:#868b80;border-radius:3px}
+.sides i.lit{background:var(--petal);box-shadow:0 0 8px var(--petal)}
+.screen{flex:1;min-height:210px;background:#101a09;background-image:repeating-linear-gradient(transparent 0 2px,rgba(255,255,255,.03) 2px 3px);border:4px solid #20241d;border-radius:8px;color:#F7D56A;padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-family:'Courier New',monospace;font-size:.82rem;text-align:center}
+.screen h4{font-size:.95rem;letter-spacing:.08em}
+.screen .opt{display:flex;justify-content:space-between;width:100%;padding:5px 8px;border-bottom:1px dotted rgba(247,213,106,.35);color:#F7D56A;background:none;text-align:left;font:inherit}
+.screen .opt:hover{background:rgba(247,213,106,.12)}
+.screen .sm{opacity:.7;font-size:.72rem}
+.screen .pill{border:1px solid #F7D56A;color:#F7D56A;padding:5px 10px;font:inherit;font-size:.75rem;background:none}
+.screen .pill:hover{background:rgba(247,213,106,.15)}
+.screen input.wish{width:100%;background:#0a1106;border:1px solid #F7D56A;color:#F7D56A;padding:8px;font:inherit;text-align:center}
+.screen .dots{letter-spacing:.5em;font-size:1.1rem}
+.screen img{width:96px;height:120px;object-fit:cover;border:2px solid #F7D56A}
+.stat{width:100%;text-align:left}
+.stat .row{display:flex;justify-content:space-between;font-size:.74rem}
+.stat .track{height:6px;background:rgba(247,213,106,.2);margin:2px 0 7px;overflow:hidden}
+.stat .track span{display:block;height:100%;background:#7ED87E;width:0;transition:width 1s ease}
+.slot-row{display:flex;justify-content:space-between;margin:12px 4px 8px;font-size:.6rem;color:#b9bdb2;letter-spacing:.1em}
+.slot{height:7px;background:#14160f;border-radius:3px;margin-top:3px;position:relative}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:170px;margin:8px auto 0}
+.keypad button{background:#d9dcd4;border-radius:3px;padding:6px 0;font-weight:800;font-size:.8rem;color:#232620;box-shadow:0 2px 0 #7c8076}
+.keypad .clr{background:#E98A7C}.keypad .ent{background:#7ED8B0}
+.keypad button:active{transform:translateY(2px);box-shadow:none}
+.card-atm{position:absolute;right:14px;bottom:-8px;width:130px;height:82px;border-radius:9px;background:linear-gradient(135deg,var(--petal),#D58A00);padding:10px;text-align:left;color:var(--seed);font-size:.62rem;font-weight:800;letter-spacing:.08em;box-shadow:0 8px 16px rgba(0,0,0,.4);rotate:-9deg;cursor:pointer;transition:all .6s ease;z-index:3}
+.card-atm .chipz{width:24px;height:18px;border-radius:3px;background:var(--seed-2);margin:8px 0 6px;opacity:.75}
+.card-atm.in{right:calc(50% - 150px);bottom:calc(100% - 205px);rotate:0deg;scale:.5;opacity:0;pointer-events:none}
+.card-hint{font-size:.72rem;color:var(--petal-soft);text-align:right;padding:4px 14px 0;opacity:.8}
+.receipt{position:absolute;right:8%;bottom:-6px;width:210px;background:#fffdf5;color:#222;font:.62rem/1.55 'Courier New',monospace;padding:10px 12px;box-shadow:0 10px 24px rgba(0,0,0,.45);transform:translateY(105%);visibility:hidden;transition:transform 1.4s ease,visibility 0s .0s;z-index:4;text-align:left}
+.receipt.out{transform:translateY(0);visibility:visible}
+.receipt .r{display:flex;justify-content:space-between;gap:6px}
+.receipt hr{border:0;border-top:1px dashed #999;margin:5px 0}
+.receipt .t{text-align:center;font-weight:700;letter-spacing:.2em}
+
+/* ---------- cake ---------- */
+.cake-svg{width:min(320px,80vw);height:auto;touch-action:none}
+.flame{transform-origin:50% 100%;animation:flicker .35s ease-in-out infinite alternate}
+@keyframes flicker{to{transform:scale(1.15,.92) rotate(2deg)}}
+.out .flame{display:none}
+.smoke{display:none}.out .smoke{display:block;animation:smoke 1.8s ease-out forwards}
+@keyframes smoke{from{opacity:.8;transform:translateY(0)}to{opacity:0;transform:translateY(-34px)}}
+.knife{position:absolute;pointer-events:none;width:22px;height:120px;filter:drop-shadow(2px 4px 4px rgba(0,0,0,.35));display:none}
+.cake-box{position:relative;touch-action:none;user-select:none}
+.petal-fall{position:fixed;top:-30px;z-index:90;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+
+/* ---------- gift ---------- */
+.giftbox{cursor:pointer;margin-top:10px;transition:transform .3s}
+.giftbox:hover{transform:scale(1.04)}
+.giftbox.open .lid{transform:translate(18px,-46px) rotate(18deg);opacity:0;transition:all .8s ease}
+.final{width:min(520px,100%);background:#FFFDF2;border-radius:18px;padding:26px 22px;box-shadow:0 10px 0 var(--petal),0 22px 36px rgba(58,34,16,.2);display:none}
+.final.show{display:block;animation:enter .9s ease both}
+.final h3{font-family:var(--serif);font-size:1.8rem;margin-bottom:10px}
+.final p{line-height:1.6;margin-bottom:10px}
+.tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:14px 0}
+.tags span{border:1.5px dashed var(--leaf);padding:5px 12px;font-size:.75rem;font-weight:800;letter-spacing:.06em;color:var(--leaf)}
+.hug{font-family:var(--script);font-size:2rem;color:var(--seed);line-height:1.15;margin-top:12px}
+
+
+/* ---------- video message ---------- */
+.vid-wrap{width:min(420px,100%);background:var(--seed);padding:10px;border-radius:18px;box-shadow:0 10px 0 var(--petal),0 22px 36px rgba(58,34,16,.25)}
+.vid-wrap video{width:100%;max-height:62vh;border-radius:10px;background:#000;display:block}
+.vid-missing{display:none;padding:30px 14px;color:var(--petal-soft);font-size:.9rem;line-height:1.5}
+.vid-wrap.missing video{display:none}.vid-wrap.missing .vid-missing{display:block}
+
+/* music button */
+#music{position:relative}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.letter p.rev{opacity:1;transform:none}}
+@media (max-width:480px){.chapter{padding:22px 14px 32px}.receipt{right:2%;width:190px}.card-atm{right:6px}.card-atm.in{right:calc(50% - 120px)}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sunflower" viewBox="0 0 100 100">
+      <g id="petals"></g>
+      <circle cx="50" cy="50" r="19" fill="#3A2210"/>
+      <circle cx="50" cy="50" r="19" fill="url(#seeds)"/>
+      <circle cx="50" cy="50" r="10" fill="#5A3718" opacity=".8"/>
+    </symbol>
+    <pattern id="seeds" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1" fill="#8a5a24"/></pattern>
+  </defs>
+</svg>
+
+<!-- LOCK -->
+<div class="overlay" id="lock">
+  <form class="lock-card" id="lockForm" autocomplete="off">
+    <div class="badge" id="lockBadge"></div>
+    <p class="script" style="font-size:1.6rem">a little secret for</p>
+    <h1 id="lockName"></h1>
+    <p>Something warm is waiting behind this little lock.</p>
+    <label for="pass">Enter the passkey</label>
+    <input id="pass" inputmode="numeric" maxlength="8" placeholder="• • • • • • • •" aria-describedby="passHint">
+    <p class="hint" id="passHint">Hint: your birthday as DDMMYYYY (numbers only)</p>
+    <div class="err" id="passErr" role="alert"></div>
+    <button class="btn gold" type="submit">Open my surprise</button>
+    <p class="script" style="margin-top:14px;font-size:1.3rem">made with a ridiculous amount of love</p>
+  </form>
+</div>
+
+<!-- LOADER -->
+<div class="overlay hide loader" id="loader">
+  <div style="text-align:center">
+    <div class="spin-flower" id="loaderFlower" style="display:inline-block"></div>
+    <h2>Opening your sunshine</h2>
+    <p>Gathering hugs, wishes and twenty tiny sunflowers</p>
+    <div class="bar-wrap"><div class="bar-fill"></div></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="floaters" id="floaters"></div>
+
+  <header class="bar">
+    <button class="chip ghost" id="music" aria-label="Play or pause music">♪ <span id="musicIcon">Play</span></button>
+    <div class="now" id="nowPlaying">Music: tap play</div>
+    <button class="chip ghost" id="nextSong" aria-label="Next song">Next ▸</button>
+  </header>
+
+  <main id="main">
+
+    <!-- 1 WELCOME -->
+    <section class="chapter" data-title="Welcome">
+      <span class="datebadge" id="dateBadge"></span>
+      <p class="script" style="margin-top:18px;font-size:1.7rem">the world got brighter twenty years ago</p>
+      <h1 class="title-big">Happiest<br><em id="age20">20th</em><br>Birthday</h1>
+      <div class="nametag" id="nameTag"></div>
+      <p style="max-width:380px;line-height:1.6">To my favourite person, the reason ordinary days feel like summer.</p>
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="pic" id="welcomePic"></div>
+        <div class="cap">twenty looks perfect on you</div>
+      </div>
+    </section>
+
+    <!-- 2 ENVELOPE + LETTER -->
+    <section class="chapter" data-title="Letter" data-gate="letter">
+      <p class="script">a note from my heart</p>
+      <h2 id="letterHead">There are things I need you to know</h2>
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Tap to open the envelope">
+        <div class="bee" id="bee"></div>
+        <div class="env-back"></div>
+        <div class="env-flap"></div>
+        <div class="env-front"></div>
+        <div class="tap">Tap to open</div>
+      </div>
+      <div class="letter" id="letter" style="display:none"></div>
+    </section>
+
+    <!-- 3 SCRATCH -->
+    <section class="chapter" data-title="Scratch card" data-gate="scratch">
+      <p class="script">a little birthday play, part 1</p>
+      <h2>Find the secret hiding under the petals</h2>
+      <div class="coupon-wrap">
+        <div class="coupon">
+          <div class="k" id="couponKicker">YOUR BIRTHDAY COUPON</div>
+          <div class="big" id="couponText"></div>
+          <div class="sm">Valid forever, especially on difficult days</div>
+        </div>
+        <canvas id="scratch"></canvas>
+      </div>
+      <p class="hint" id="scratchHint">Use your finger or cursor to scratch.</p>
+    </section>
+
+    <!-- 4 LOVE METER -->
+    <section class="chapter" data-title="Love meter" data-gate="meter">
+      <p class="script">a little birthday play, part 2</p>
+      <h2>How much love is in the air?</h2>
+      <div class="panel">
+        <h3 style="font-family:var(--serif);font-size:1.5rem" id="meterQ"></h3>
+        <div class="jar"><div class="fill" id="jarFill"></div><div class="ico" id="jarIco"></div></div>
+        <div class="pct" id="pct">20%</div>
+        <p class="hint" id="meterMsg">Press the button for a very scientific answer.</p>
+        <button class="btn" id="measure" style="margin-top:14px">Measure the love</button>
+      </div>
+    </section>
+
+    <!-- 5 ATM -->
+    <section class="chapter" data-title="Memory ATM" data-gate="atm">
+      <p class="script">a special memory chapter</p>
+      <h2>Browse a few favourite photos from the Photo Bank</h2>
+      <div class="atm-stage" id="atmStage">
+        <div class="atm">
+          <div class="sign">PHOTO BANK</div>
+          <div class="atm-top">
+            <div class="sides" id="sidesL"><i></i><i></i><i></i><i></i></div>
+            <div class="screen" id="screen"></div>
+            <div class="sides" id="sidesR"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="slot-row"><div style="width:42%">CARD<div class="slot"></div></div><div style="width:34%;text-align:right">RECEIPT<div class="slot"></div></div></div>
+          <div class="keypad" id="keypad"></div>
+        </div>
+        <div class="card-hint" id="cardHint">Tap the card to slide it into the slot ↑</div>
+        <div class="card-atm" id="atmCard" role="button" tabindex="0" aria-label="Insert card">PHOTO BANK<div class="chipz"></div><div id="cardName"></div></div>
+        <div class="receipt" id="receipt"></div>
+      </div>
+    </section>
+
+    <!-- 6 CANDLES -->
+    <section class="chapter" data-title="Candles" data-gate="candles">
+      <p class="script">a special birthday ritual</p>
+      <h2>Blow out the candles first</h2>
+      <div id="candleCake"></div>
+      <button class="btn gold" id="blow" style="margin-top:18px">Blow out the candles</button>
+    </section>
+
+    <!-- 7 CUT CAKE -->
+    <section class="chapter" data-title="Cut the cake" data-gate="cake">
+      <p class="script">a special birthday ritual</p>
+      <h2>Now cut the cake 🍰</h2>
+      <div class="cake-box" id="cakeBox">
+        <svg class="cake-svg" id="cutSvg" viewBox="0 0 320 320">
+          <circle cx="160" cy="160" r="150" fill="#FFE9A0" stroke="#F6B80F" stroke-width="3"/>
+          <circle cx="160" cy="160" r="122" fill="#F6B80F"/>
+          <circle cx="160" cy="160" r="112" fill="#FFD84A"/>
+          <g id="seedsRing"></g>
+          <text x="160" y="178" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="800" font-size="56" fill="#3A2210">20</text>
+          <g id="cuts" stroke="#FFF9DF" stroke-width="5" stroke-linecap="round"></g>
+          <path id="trail" d="" stroke="rgba(58,34,16,.45)" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <p class="hint" id="cutHint">Drag across the cake to slice it. Cut it twice. Pieces: <b id="pieces">1</b></p>
+      <button class="btn gold" id="served" style="display:none;margin-top:16px">Cake is served, open your gift 🎁</button>
+    </section>
+
+    <!-- 8 VIDEO -->
+    <section class="chapter" data-title="Video message" data-gate="video">
+      <p class="script">something just for you</p>
+      <h2 id="vidHead">A little message from me</h2>
+      <div class="vid-wrap" id="vidWrap">
+        <video id="vid" controls playsinline preload="metadata" poster=""></video>
+        <div class="vid-missing">Video not added yet.<br>Put it at <b>assets/video/message.mp4</b></div>
+      </div>
+      <p class="hint">Sound on, please 💛 (the music pauses while this plays)</p>
+    </section>
+
+    <!-- 9 GIFT -->
+    <section class="chapter" data-title="Your gift" data-gate="gift">
+      <p class="script">one last thing</p>
+      <h2 id="giftHead">Accept your gift</h2>
+      <div class="giftbox" id="giftbox" role="button" tabindex="0" aria-label="Tap the box to accept your gift">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <rect x="30" y="85" width="140" height="95" rx="6" fill="#E4A400"/>
+          <rect x="92" y="85" width="16" height="95" fill="#3A2210"/>
+          <g class="lid"><rect x="22" y="62" width="156" height="30" rx="6" fill="#F6B80F"/><rect x="92" y="62" width="16" height="30" fill="#3A2210"/>
+            <path d="M100 62 C70 20 40 50 100 62 C160 50 130 20 100 62Z" fill="#4D6A22"/></g>
+        </svg>
+        <p class="hint">Tap the box to accept your gift</p>
+      </div>
+      <div class="final" id="final"></div>
+    </section>
+  </main>
+
+  <footer class="nav">
+    <button class="chip ghost" id="back">◂ Back</button>
+    <div class="label" id="chLabel"></div>
+    <button class="chip" id="next">Continue ❤</button>
+  </footer>
+</div>
+
+<script>
+/* =========================================================
+   CONFIG — change anything here, no need to touch the rest
+   ========================================================= */
+const CONFIG = {
+  name: "Aparna",
+  nickname: "Lala",
+  from: "Arjit",
+  age: 20,
+  birthday: { day: 10, month: 10, year: 2006 },   // passkey = DDMMYYYY -> 10102006, ATM PIN = DDMM -> 1010
+  dateLabel: "10 October 2026",
+
+  // Her recorded songs. Put the MP3 files in assets/music/
+  songs: [
+    { title: "Song 1", src: "assets/music/song1.mp3" },
+    { title: "Song 2", src: "assets/music/song2.mp3" },
+    { title: "Song 3", src: "assets/music/song3.mp3" }
+  ],
+
+  // Six photos for the ATM. Put the files in assets/photos/
+  photos: [
+    { src: "assets/photos/1.jpg", caption: "Favourite photo ❤️" },
+    { src: "assets/photos/2.jpg", caption: "Looking good ✨" },
+    { src: "assets/photos/3.jpg", caption: "Just vibing 🌙" },
+    { src: "assets/photos/4.jpg", caption: "Today, your big day 🎂" },
+    { src: "assets/photos/5.jpg", caption: "That smile 🌻" },
+    { src: "assets/photos/6.jpg", caption: "Effortless 💛" }
+  ],
+
+  // Love Balance. "max" is how full the bar is, "label" is what is shown.
+  stats: [
+    { name: "Laughters", pct: 100, label: "100%" },
+    { name: "Fights",    pct: 70,  label: "70%" },
+    { name: "Care",      pct: 100, label: "200%" },
+    { name: "Love",      pct: 100, label: "∞" }
+  ],
+
+  video: "assets/video/message.mp4",   // your recorded birthday message
+
+  coupon: "A forehead kiss",
+
+  // Use {name} for her name, {nick} for nickname.
+  letter: [
+    "Happy Birthday to my beautiful girl, {name} ❤️🥹",
+    "{nick}, you are genuinely one of the most precious parts of my life. ❤️ I don't know how I got so lucky to have someone as cute, caring, loving, and special as you.",
+    "You make my ordinary days feel special just by being in them. Your smile, your little बातें, your silly moments, your moods — I love all of it because I love you. 🫶🏻",
+    "On your birthday, I just want you to know that I'll always be there to celebrate your happiest moments, hold your hand through the difficult ones, and annoy you for the rest of my life. ❤️",
+    "I hope this year brings you everything your heart wishes for, lots of happiness, endless smiles, and all the love you deserve.",
+    "Happy Birthday, {name} ❤️🎂✨",
+    "I love you so, so much, Buggu. 🥹❤️"
+  ],
+  finalLine: "Now come here and give your birthday hug to your favourite person. 😌🫂❤️"
+};
+
+/* ========================= helpers ========================= */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const fill = t => t.replaceAll("{name}", CONFIG.name).replaceAll("{nick}", CONFIG.nickname);
+const pad = n => String(n).padStart(2,"0");
+const PASSKEY = pad(CONFIG.birthday.day)+pad(CONFIG.birthday.month)+CONFIG.birthday.year;
+const PIN = pad(CONFIG.birthday.day)+pad(CONFIG.birthday.month);
+
+/* Sunflower SVG factory */
+function buildPetals(){
+  const g = $("#petals"); let s = "";
+  for(let ring=0; ring<2; ring++){
+    const n = 14, off = ring*(180/n), fillc = ring? "#F6B80F" : "#FFD23F";
+    for(let i=0;i<n;i++){
+      const a = i*(360/n)+off;
+      s += `<ellipse cx="50" cy="19" rx="6.2" ry="${ring?17:14}" fill="${fillc}" stroke="#D68A00" stroke-width=".6" transform="rotate(${a} 50 50)"/>`;
+    }
+  }
+  g.innerHTML = s;
+}
+buildPetals();
+const flower = (size, extra="") => `<svg width="${size}" height="${size}" viewBox="0 0 100 100" ${extra}><use href="#sunflower"/></svg>`;
+
+/* placeholder when a photo file is missing */
+const PLACEHOLDER = "data:image/svg+xml;utf8," + encodeURIComponent(
+ `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150"><rect width="120" height="150" fill="#FFE48A"/><g transform="translate(60 70)"><circle r="22" fill="#3A2210"/>${
+  Array.from({length:12},(_,i)=>`<ellipse cx="0" cy="-34" rx="9" ry="17" fill="#F6B80F" transform="rotate(${i*30})"/>`).join("")
+ }<circle r="20" fill="#3A2210"/></g><text x="60" y="136" text-anchor="middle" font-size="9" fill="#3A2210" font-family="sans-serif">add photo</text></svg>`);
+
+/* ========================= static fill-in ========================= */
+document.title = `Happy ${CONFIG.age}th Birthday, ${CONFIG.name} 🌻`;
+$("#lockName").textContent = CONFIG.name.toUpperCase();
+$("#lockBadge").innerHTML = flower(56);
+$("#loaderFlower").innerHTML = flower(90);
+$("#dateBadge").textContent = CONFIG.dateLabel.toUpperCase();
+$("#age20").textContent = CONFIG.age + "th";
+$("#nameTag").textContent = CONFIG.name.toUpperCase();
+$("#welcomePic").innerHTML = flower(150);
+$("#bee").innerHTML = `<svg width="54" height="54" viewBox="0 0 54 54"><ellipse cx="27" cy="30" rx="14" ry="11" fill="#F6B80F" stroke="#3A2210" stroke-width="2"/><path d="M20 20v20M27 19v22M34 20v20" stroke="#3A2210" stroke-width="3"/><ellipse cx="20" cy="17" rx="8" ry="6" fill="#fff" opacity=".8" stroke="#3A2210"/><ellipse cx="33" cy="17" rx="8" ry="6" fill="#fff" opacity=".8" stroke="#3A2210"/><circle cx="14" cy="28" r="1.8" fill="#3A2210"/></svg>`;
+$("#couponText").textContent = CONFIG.coupon.toUpperCase();
+$("#meterQ").textContent = `How loved is ${CONFIG.name}?`;
+$("#jarIco").innerHTML = flower(46);
+$("#cardName").textContent = `${CONFIG.name.toUpperCase()} • LOVE`;
+$("#giftHead").textContent = `One last thing, ${CONFIG.nickname}`;
+
+/* floating background sunflowers */
+$("#floaters").innerHTML = [
+  [90,"-20px","auto","auto","-20px"],[70,"auto","-10px","20px","auto"],[56,"40%","auto","auto","-18px"],[64,"auto","6%","auto","-14px"]
+].map(([s,t,b,r,l],i)=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100" style="top:${t};bottom:${b};right:${r};left:${l};animation-duration:${70+i*25}s"><use href="#sunflower"/></svg>`).join("");
+
+/* ========================= music ========================= */
+const audio = new Audio(); audio.preload = "auto";
+let songIdx = 0, failed = 0, playing = false;
+function loadSong(i){
+  songIdx = (i + CONFIG.songs.length) % CONFIG.songs.length;
+  audio.src = CONFIG.songs[songIdx].src;
+  $("#nowPlaying").textContent = "Now playing: " + CONFIG.songs[songIdx].title;
+}
+function setPlaying(p){ playing = p; $("#musicIcon").textContent = p ? "Pause" : "Play"; }
+function playMusic(){
+  if(!CONFIG.songs.length) return;
+  audio.play().then(()=>setPlaying(true)).catch(()=>setPlaying(false));
+}
+audio.addEventListener("ended", ()=>{ loadSong(songIdx+1); playMusic(); });
+audio.addEventListener("error", ()=>{
+  failed++;
+  if(failed >= CONFIG.songs.length){ $("#nowPlaying").textContent = "Add her songs to assets/music/"; setPlaying(false); return; }
+  loadSong(songIdx+1); playMusic();
+});
+audio.addEventListener("playing", ()=>{ failed = 0; });
+$("#music").onclick = () => playing ? (audio.pause(), setPlaying(false)) : playMusic();
+$("#nextSong").onclick = () => { loadSong(songIdx+1); playMusic(); };
+loadSong(0);
+
+/* ========================= lock + loader ========================= */
+$("#lockForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = $("#pass").value.trim();
+  if(v === PASSKEY){
+    $("#lock").classList.add("hide"); $("#loader").classList.remove("hide");
+    playMusic();                               // allowed: this is a user gesture
+    setTimeout(()=>{ $("#loader").classList.add("hide"); go(0); }, 2600);
+  } else {
+    $("#passErr").textContent = "That's not it. Think about your birthday 💛";
+    const c = $(".lock-card"); c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake");
+  }
+});
+
+/* ========================= chapter navigation ========================= */
+const chapters = $$(".chapter");
+const gates = {};             // chapter gate -> done?
+let cur = -1;
+function go(i){
+  i = Math.max(0, Math.min(chapters.length-1, i));
+  chapters.forEach((c,k)=>c.classList.toggle("active", k===i));
+  cur = i; $("#main").scrollTop = 0;
+  $("#chLabel").textContent = chapters[i].dataset.title;
+  $("#back").disabled = i === 0;
+  updateNext();
+  if(chapters[i].dataset.gate === "scratch") setupScratch();
+  if(chapters[i].dataset.gate === "atm") atmReset();
+}
+function updateNext(){
+  const g = chapters[cur].dataset.gate;
+  const last = cur === chapters.length-1;
+  const n = $("#next");
+  n.textContent = last ? "Again ↺" : "Continue ❤";
+  n.disabled = !!g && !gates[g] && !last;
+  n.title = n.disabled ? "Finish this chapter to continue" : "";
+}
+function done(g){ gates[g] = true; updateNext(); }
+$("#next").onclick = () => cur === chapters.length-1 ? location.reload() : go(cur+1);
+$("#back").onclick = () => go(cur-1);
+
+/* ========================= petals confetti ========================= */
+function burst(n=36){
+  for(let i=0;i<n;i++){
+    const d = document.createElement("div"); d.className = "petal-fall";
+    d.style.left = Math.random()*100 + "vw";
+    d.style.animationDuration = (2.8 + Math.random()*2.6) + "s";
+    d.style.animationDelay = (Math.random()*.8) + "s";
+    d.innerHTML = Math.random()<.35 ? flower(26) : `<svg width="14" height="22" viewBox="0 0 14 22"><ellipse cx="7" cy="11" rx="6" ry="10" fill="${Math.random()<.5?'#F6B80F':'#FFD23F'}" stroke="#D68A00" stroke-width=".6"/></svg>`;
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(), 6500);
+  }
+}
+
+/* ========================= letter ========================= */
+function openEnvelope(){
+  const env = $("#envelope"); if(env.classList.contains("open")) return;
+  env.classList.add("open");
+  setTimeout(()=>{
+    env.style.display = "none"; $("#bee").style.display = "none";
+    $("#letterHead").textContent = "A letter written for you";
+    const L = $("#letter"); L.style.display = "block";
+    L.innerHTML = CONFIG.letter.map((p,i)=>`<p class="rev" style="animation-delay:${i*0.55}s">${fill(p)}</p>`).join("")
+      + `<div class="sign rev" style="animation-delay:${CONFIG.letter.length*0.55}s">Always yours, ${CONFIG.from}</div>`;
+    done("letter");
+  }, 750);
+}
+$("#envelope").addEventListener("click", openEnvelope);
+$("#envelope").addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" ") openEnvelope(); });
+
+/* ========================= scratch card ========================= */
+let scratchReady = false;
+function setupScratch(){
+  const cv = $("#scratch"), wrap = cv.parentElement;
+  const w = wrap.clientWidth, h = wrap.clientHeight, dpr = window.devicePixelRatio || 1;
+  if(scratchReady) return;
+  scratchReady = true;
+  cv.width = w*dpr; cv.height = h*dpr;
+  const ctx = cv.getContext("2d"); ctx.scale(dpr,dpr);
+  const g = ctx.createLinearGradient(0,0,w,h); g.addColorStop(0,"#C98A12"); g.addColorStop(1,"#8C5A0C");
+  ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+  for(let i=0;i<90;i++){ ctx.fillStyle = i%2? "rgba(255,228,138,.55)":"rgba(58,34,16,.45)"; ctx.beginPath(); ctx.arc(Math.random()*w,Math.random()*h,1.6,0,7); ctx.fill(); }
+  ctx.fillStyle = "#FFF3BF"; ctx.font = "800 26px Fraunces, Georgia, serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText("SCRATCH ME", w/2, h/2);
+  ctx.globalCompositeOperation = "destination-out";
+  let down = false, last = null, revealed = false, moves = 0;
+  const pos = e => { const r = cv.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
+  const scratch = e => {
+    if(!down) return; const p = pos(e);
+    ctx.lineWidth = 34; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo((last||p).x,(last||p).y); ctx.lineTo(p.x,p.y); ctx.stroke(); last = p;
+    if(++moves % 8 === 0 && !revealed) check();
+  };
+  function check(){
+    const d = ctx.getImageData(0,0,cv.width,cv.height).data; let clear = 0, tot = 0;
+    for(let i=3;i<d.length;i+=64){ tot++; if(d[i]===0) clear++; }
+    if(clear/tot > .45){ revealed = true; cv.style.transition="opacity .6s"; cv.style.opacity = 0; cv.style.pointerEvents="none";
+      $("#scratchHint").textContent = "Your prize is yours 🌻"; burst(24); done("scratch"); }
+  }
+  cv.addEventListener("pointerdown", e=>{ down = true; last = null; cv.setPointerCapture(e.pointerId); scratch(e); });
+  cv.addEventListener("pointermove", scratch);
+  cv.addEventListener("pointerup", ()=>{ down = false; last = null; });
+  cv.addEventListener("pointercancel", ()=>{ down = false; last = null; });
+}
+
+/* ========================= love meter ========================= */
+$("#measure").onclick = () => {
+  const b = $("#measure"); b.disabled = true; $("#meterMsg").textContent = "Measuring…";
+  const fillEl = $("#jarFill"); fillEl.style.height = "100%";
+  let p = 20; const t = setInterval(()=>{ p = Math.min(100, p+2); $("#pct").textContent = p + "%";
+    if(p>=100){ clearInterval(t); $("#meterMsg").textContent = "Result confirmed. Completely, endlessly, ridiculously loved. 💛"; b.disabled = false; b.textContent = "Measure again"; burst(18); done("meter"); } }, 80);
+};
+
+/* ========================= Memory ATM ========================= */
+const screen = $("#screen"), receipt = $("#receipt");
+let atm = { state:"card", pin:"", idx:0, viewed:new Set(), wish:"", sawBalance:false };
+function lights(l,r){ $$("#sidesL i").forEach((el,i)=>el.classList.toggle("lit", i<l)); $$("#sidesR i").forEach((el,i)=>el.classList.toggle("lit", i<r)); }
+function atmReset(){
+  atm = { state:"card", pin:"", idx:0, viewed:new Set(), wish:"", sawBalance:false };
+  $("#atmCard").classList.remove("in"); $("#cardHint").style.display = ""; receipt.classList.remove("out");
+  render();
+}
+function render(){
+  const s = atm.state; lights(0,0);
+  if(s==="card"){
+    screen.innerHTML = `<h4>WELCOME TO PHOTO BANK</h4><div>Please insert your card</div><div class="sm">${CONFIG.name} • ${CONFIG.age} • 2026</div>`;
+  } else if(s==="pin"){
+    const dots = Array.from({length:4},(_,i)=> i<atm.pin.length ? "●":"○").join(" ");
+    screen.innerHTML = `<h4>ENTER PIN</h4><div class="dots">${dots}</div><div>Use the keypad, then ENTER</div><div class="sm">hint: day + month of your birthday</div>`;
+  } else if(s==="checking"){
+    screen.innerHTML = `<h4>CHECKING ACCOUNT…</h4><div class="dots" style="letter-spacing:.2em">▓▒░▓▒░▓▒░</div>`;
+  } else if(s==="menu"){
+    lights(4,0);
+    screen.innerHTML = `<h4>PHOTO BANK</h4>
+      <button class="opt" data-o="1"><span>1 View Photos</span><span>◂</span></button>
+      <button class="opt" data-o="2"><span>2 Check Love Balance</span><span>◂</span></button>
+      <button class="opt" data-o="3"><span>3 Deposit Wishes</span><span>◂</span></button>
+      <button class="opt" data-o="4"><span>4 Exit</span><span>◂</span></button>
+      <div class="sm">tap an option or press its number</div>`;
+  } else if(s==="photo"){
+    lights(1,1);
+    const p = CONFIG.photos[atm.idx]; atm.viewed.add(atm.idx);
+    const last = atm.idx === CONFIG.photos.length-1;
+    screen.innerHTML = `<div class="sm">Photo ${atm.idx+1}/${CONFIG.photos.length}</div>
+      <img src="${p.src}" alt="${p.caption}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+      <div>“${p.caption}”</div>
+      <div><button class="pill" data-a="prev">◂ PREVIOUS</button> <button class="pill" data-a="${last?'menu':'next'}">${last?'MENU':'NEXT'} ▸</button></div>`;
+  } else if(s==="balance"){
+    lights(0,1); atm.sawBalance = true;
+    screen.innerHTML = `<h4>LOVE BALANCE</h4><div class="stat">${CONFIG.stats.map(x=>`<div class="row"><span>${x.name}</span><span>${x.label}</span></div><div class="track"><span data-w="${x.pct}"></span></div>`).join("")}</div><button class="pill" data-a="menu">◂ BACK TO MENU</button>`;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>$$(".track span",screen).forEach(el=>el.style.width = el.dataset.w+"%")));
+  } else if(s==="wish"){
+    screen.innerHTML = `<h4>INSERT YOUR WISH</h4><input class="wish" id="wishIn" maxlength="40" placeholder="type a wish…" autocomplete="off"><button class="pill" data-a="confirmWish">Confirm</button>`;
+  } else if(s==="wishdone"){
+    screen.innerHTML = `<h4>WISH DEPOSITED<br>SUCCESSFULLY</h4><div>Thank you 💛</div><button class="pill" data-a="menu">◂ BACK TO MENU</button>`;
+  } else if(s==="exit"){
+    screen.innerHTML = `<h4>END SESSION?</h4><div><button class="pill" data-a="yes">◂ YES</button> <button class="pill" data-a="menu">NO ▸</button></div>`;
+  } else if(s==="printing"){
+    screen.innerHTML = `<h4>PRINTING RECEIPT</h4><div>Please collect your receipt</div>`;
+  } else if(s==="end"){
+    screen.innerHTML = `<h4>THANK YOU, ${CONFIG.name.toUpperCase()}</h4><div>Tap Continue when you're ready 🌻</div><button class="pill" data-a="again">START AGAIN</button>`;
+  }
+}
+screen.addEventListener("click", e => {
+  const o = e.target.closest("[data-o]"); if(o) return menuPick(o.dataset.o);
+  const a = e.target.closest("[data-a]"); if(!a) return;
+  const act = a.dataset.a;
+  if(act==="next") { atm.idx++; render(); }
+  else if(act==="prev") { atm.idx = Math.max(0, atm.idx-1); render(); }
+  else if(act==="menu") { atm.state="menu"; render(); }
+  else if(act==="confirmWish"){ atm.wish = ($("#wishIn").value||"").trim() || "a lifetime of sunshine"; atm.state="wishdone"; render(); }
+  else if(act==="yes") printReceipt();
+  else if(act==="again") atmReset();
+});
+function menuPick(n){
+  if(n==="1"){ atm.idx = 0; atm.state = "photo"; }
+  else if(n==="2") atm.state = "balance";
+  else if(n==="3") atm.state = "wish";
+  else if(n==="4") atm.state = "exit";
+  render();
+}
+function printReceipt(){
+  atm.state = "printing"; render();
+  const photosHtml = CONFIG.photos.map((p,i)=>`<div class="r"><span>${i+1}.</span><span>${p.caption}</span></div>`).join("");
+  const statsHtml = CONFIG.stats.map(x=>`<div class="r"><span>${x.name}</span><span>${x.label}</span></div>`).join("");
+  receipt.innerHTML = `<div class="t">PHOTO BANK</div><hr>
+    <div class="r"><span>DATE</span><span>${pad(CONFIG.birthday.day)} OCT</span></div>
+    <div class="r"><span>CARD</span><span>**** LOVE</span></div><hr>
+    <div class="r"><span>Photos viewed</span><span>${atm.viewed.size}/${CONFIG.photos.length}</span></div>${photosHtml}<hr>
+    ${statsHtml}<hr>
+    <div class="r"><span>Wish deposited</span><span>${atm.wish?"YES":"NO"}</span></div>
+    ${atm.wish?`<div style="text-align:center">“${atm.wish.replace(/[<>]/g,"")}”</div>`:""}
+    <hr><div class="t" style="letter-spacing:.05em">FROM ${CONFIG.from.toUpperCase()}, WITH LOVE</div>`;
+  requestAnimationFrame(()=>receipt.classList.add("out"));
+  setTimeout(()=>{ atm.state = "end"; render(); done("atm"); }, 2600);
+}
+/* keypad */
+$("#keypad").innerHTML = ["1","2","3","4","5","6","7","8","9","CLR","0","ENTER"].map(k=>`<button class="${k==='CLR'?'clr':k==='ENTER'?'ent':''}" data-k="${k}">${k}</button>`).join("");
+$("#keypad").addEventListener("click", e => {
+  const k = e.target.closest("[data-k]")?.dataset.k; if(!k) return;
+  if(atm.state==="pin"){
+    if(k==="CLR") atm.pin = "";
+    else if(k==="ENTER"){
+      if(atm.pin === PIN){ atm.state = "checking"; render(); setTimeout(()=>{ atm.state="menu"; render(); }, 1400); return; }
+      else { atm.pin = ""; screen.classList.remove("shake"); void screen.offsetWidth; screen.classList.add("shake"); }
+    }
+    else if(/\d/.test(k) && atm.pin.length < 4) atm.pin += k;
+    render();
+  } else if(atm.state==="menu" && /^[1-4]$/.test(k)) menuPick(k);
+});
+function insertCard(){
+  if(atm.state !== "card") return;
+  $("#atmCard").classList.add("in"); $("#cardHint").style.display = "none";
+  setTimeout(()=>{ atm.state = "pin"; render(); }, 650);
+}
+$("#atmCard").addEventListener("click", insertCard);
+$("#atmCard").addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" ") insertCard(); });
+
+/* ========================= candles ========================= */
+(function buildCandleCake(){
+  const n = 5; // five candles keep it neat; the cake still says 20
+  let candles = "";
+  for(let i=0;i<n;i++){
+    const x = 70 + i*45;
+    candles += `<g><rect x="${x-4}" y="62" width="8" height="38" fill="#FFF3BF" stroke="#D68A00"/><rect x="${x-4}" y="72" width="8" height="5" fill="#E4572E" opacity=".7"/>
+      <path class="flame" d="M${x} 38 C${x-9} 50 ${x-7} 60 ${x} 62 C${x+7} 60 ${x+9} 50 ${x} 38Z" fill="#FFB020"/><path class="flame" d="M${x} 48 C${x-4} 54 ${x-3} 59 ${x} 61 C${x+3} 59 ${x+4} 54 ${x} 48Z" fill="#FFE36B"/>
+      <path class="smoke" d="M${x} 50 q-6 -10 0 -18 q6 -8 0 -16" stroke="#9a8a6a" stroke-width="3" fill="none" stroke-linecap="round"/></g>`;
+  }
+  $("#candleCake").innerHTML = `<svg id="cc" viewBox="0 0 320 250" width="320" style="max-width:86vw;height:auto">
+    <ellipse cx="160" cy="220" rx="150" ry="22" fill="#E8D9A5"/>
+    <rect x="30" y="140" width="260" height="78" rx="14" fill="#E4A400"/>
+    <rect x="30" y="100" width="260" height="62" rx="14" fill="#FFD84A"/>
+    <path d="M30 118 q16 22 32 0 t32 0 t32 0 t32 0 t32 0 t32 0 t32 0 t32 0 v-8 h-260z" fill="#FFF3BF"/>
+    ${candles}
+    <text x="160" y="196" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="800" font-size="46" fill="#3A2210">${CONFIG.age}</text></svg>`;
+})();
+$("#blow").onclick = () => {
+  $("#cc").classList.add("out"); $("#blow").disabled = true; $("#blow").textContent = "Make a wish… 🌻";
+  burst(40); done("candles");
+};
+
+/* ========================= cake cutting ========================= */
+(function seedRing(){
+  let s = ""; for(let i=0;i<24;i++){ const a = i*15*Math.PI/180; s += `<circle cx="${160+98*Math.cos(a)}" cy="${160+98*Math.sin(a)}" r="3" fill="#3A2210" opacity=".55"/>`; }
+  $("#seedsRing").innerHTML = s;
+})();
+(function cutting(){
+  const svg = $("#cutSvg"); let drawing = false, pts = [], cuts = 0;
+  const toSvg = e => { const r = svg.getBoundingClientRect(); return {x:(e.clientX-r.left)/r.width*320, y:(e.clientY-r.top)/r.height*320}; };
+  svg.addEventListener("pointerdown", e => { if(cuts>=2) return; drawing = true; pts = [toSvg(e)]; svg.setPointerCapture(e.pointerId); });
+  svg.addEventListener("pointermove", e => {
+    if(!drawing) return; pts.push(toSvg(e));
+    $("#trail").setAttribute("d", "M" + pts.map(p=>p.x.toFixed(1)+" "+p.y.toFixed(1)).join(" L"));
+  });
+  const end = () => {
+    if(!drawing) return; drawing = false; $("#trail").setAttribute("d","");
+    const a = pts[0], b = pts[pts.length-1]; if(!a||!b) return;
+    const len = Math.hypot(b.x-a.x, b.y-a.y); if(len < 110) return;      // needs a real swipe
+    // distance of stroke midpoint from centre must be small enough to cross the cake
+    const mx = (a.x+b.x)/2, my = (a.y+b.y)/2; if(Math.hypot(mx-160,my-160) > 110) return;
+    const ang = Math.atan2(b.y-a.y, b.x-a.x), dx = Math.cos(ang)*150, dy = Math.sin(ang)*150;
+    const ln = document.createElementNS("http://www.w3.org/2000/svg","line");
+    ln.setAttribute("x1",160-dx); ln.setAttribute("y1",160-dy); ln.setAttribute("x2",160+dx); ln.setAttribute("y2",160+dy);
+    $("#cuts").appendChild(ln); cuts++; $("#pieces").textContent = cuts===1 ? 2 : 4;
+    if(cuts>=2){ $("#cutHint").innerHTML = "Perfect. Four slices for four hugs 🌻"; $("#served").style.display = "inline-flex"; burst(30); done("cake"); }
+  };
+  svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end);
+})();
+$("#served").onclick = () => go(cur+1);
+
+/* ========================= video message ========================= */
+(function(){
+  const v = $("#vid"), wrap = $("#vidWrap"); let wasPlaying = false;
+  v.src = CONFIG.video;
+  v.addEventListener("error", ()=>{ wrap.classList.add("missing"); done("video"); });
+  v.addEventListener("play", ()=>{ wasPlaying = playing; if(playing){ audio.pause(); setPlaying(false); } });
+  const resume = ()=>{ if(wasPlaying){ playMusic(); wasPlaying = false; } };
+  v.addEventListener("pause", resume);
+  v.addEventListener("ended", ()=>{ resume(); done("video"); burst(30); });
+  // allow continuing after she has watched a bit, in case she skips around
+  v.addEventListener("timeupdate", ()=>{ if(v.duration && v.currentTime > v.duration*0.6) done("video"); });
+})();
+
+/* ========================= gift ========================= */
+function openGift(){
+  const gb = $("#giftbox"); if(gb.classList.contains("open")) return;
+  gb.classList.add("open"); burst(60);
+  setTimeout(()=>{
+    gb.style.display = "none";
+    const f = $("#final");
+    f.innerHTML = `<h3>Happy ${CONFIG.age}th Birthday, ${CONFIG.name}</h3>
+      <p>The real gift is not in this box. It is every chapter you just walked through: the locked door only you could open, the scratch card, the love meter that refused to stop at 100, the letter, the photo bank, and a cake cut with your own hands.</p>
+      <p>Consider all of it yours. Forever. No expiry, no conditions.</p>
+      <div class="tags"><span>${CONFIG.coupon.toUpperCase()}</span><span>LATE NIGHT CALLS</span><span>ONE WISH, GRANTED</span><span>ME, ALWAYS</span></div>
+      <div class="script" style="font-size:1.6rem">Gift accepted 🌻</div>
+      <div class="hug">${CONFIG.finalLine}</div>
+      <div style="margin-top:8px;font-family:var(--script);font-size:1.6rem;color:var(--leaf)">— ${CONFIG.from}</div>`;
+    f.classList.add("show"); done("gift");
+  }, 900);
+}
+$("#giftbox").addEventListener("click", openGift);
+$("#giftbox").addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" ") openGift(); });
+
+/* start state */
+$("#back").disabled = true;
+</script>
+</body>
+</html>

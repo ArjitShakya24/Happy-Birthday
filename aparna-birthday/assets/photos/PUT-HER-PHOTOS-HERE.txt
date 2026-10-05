@@ -1,0 +1,2 @@
+Drop 6 photos here named 1.jpg ... 6.jpg (or edit CONFIG > photos in index.html).
+Tip: crop them to roughly square/portrait and keep each under ~500 KB so the page loads fast.

@@ -1,0 +1,2 @@
+Drop her recorded songs here as MP3 files.
+Name them song1.mp3, song2.mp3, song3.mp3 (or edit the list in index.html under CONFIG > songs).
